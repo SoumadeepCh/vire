@@ -130,14 +130,3 @@ SMTP_PASS=
 └── types.d.ts            # TypeScript declarations
 ```
 
-## 🤚 Contributing
-
-**Contributions are not accepted for this project.**
-
-## 📝 License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## 💬 Support
-
-For support, please refer to the official documentation or watch the related YouTube video.
