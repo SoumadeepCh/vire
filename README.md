@@ -1,64 +1,68 @@
-# ImageKit Video Shop
+# Vire: ImageKit Video Shop
 
-A modern Next.js application for managing and selling video content using ImageKit integration. This project provides a full-featured platform with user authentication, video upload capabilities, and payment processing using Razorpay.
+Vire is a modern, full-featured Next.js application for managing and selling video content, seamlessly integrated with ImageKit. It offers robust user authentication, secure video uploads, and smooth payment processing via Razorpay—all wrapped in a beautiful, responsive UI.
 
-## Features
+## ✨ Features
 
-- 🔐 User Authentication (NextAuth.js)
-- 📹 Video Upload and Management (ImageKit)
-- 💳 Payment Processing (Razorpay)
-- 🎨 Modern UI with Tailwind CSS and DaisyUI
-- 📱 Fully Responsive Design
-- 🔒 Secure API Routes
-- 📧 Email Notifications (Nodemailer)
-- 🗄️ MongoDB Database Integration
+-   🔐 **User Authentication** (NextAuth.js)
+-   📹 **Video Upload & Management** (ImageKit)
+-   💳 **Payment Processing** (Razorpay)
+-   🎨 **Modern UI** (Tailwind CSS, DaisyUI)
+-   📱 **Fully Responsive Design**
+-   🔒 **Secure API Routes**
+-   📧 **Email Notifications** (Nodemailer)
+-   🗄️ **MongoDB Database Integration**
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-- **Frontend**: Next.js 15, React 19, TypeScript
-- **Styling**: Tailwind CSS, DaisyUI
-- **Authentication**: NextAuth.js, JWT
-- **Database**: MongoDB with Mongoose
-- **File Storage**: ImageKit
-- **Payment**: Razorpay
-- **Email**: Nodemailer
-- **Form Handling**: React Hook Form
+-   **Frontend:** Next.js 15, React 19, TypeScript
+-   **Styling:** Tailwind CSS, DaisyUI
+-   **Authentication:** NextAuth.js, JWT
+-   **Database:** MongoDB + Mongoose
+-   **File Storage:** ImageKit
+-   **Payment:** Razorpay
+-   **Email:** Nodemailer
+-   **Forms:** React Hook Form
 
-## Prerequisites
+## ⚡ Prerequisites
 
-- Node.js (Latest LTS version)
-- MongoDB Database
-- ImageKit Account
-- Razorpay Account
-- SMTP Server (for email notifications)
+-   [Node.js](https://nodejs.org/) (Latest LTS)
+-   [MongoDB](https://www.mongodb.com/)
+-   [ImageKit](https://imagekit.io/) Account
+-   [Razorpay](https://razorpay.com/) Account
+-   SMTP Server (for email notifications)
 
-## Getting Started
+## 🚀 Getting Started
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd imagekit-video-main
-```
+1. **Clone the repository:**
 
-2. Install dependencies:
-```bash
-npm install
-```
+    ```bash
+    git clone <repository-url>
+    cd vire
+    ```
 
-3. Configure environment variables:
-   - Copy `.env.example` to `.env`
-   - Fill in the required environment variables
+2. **Install dependencies:**
 
-4. Run the development server:
-```bash
-npm run dev
-```
+    ```bash
+    npm install
+    ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+3. **Configure environment variables:**
 
-## Environment Variables
+    - Copy `.env.example` to `.env`
+    - Fill in all required values (see below)
 
-Create a `.env` file with the following variables:
+4. **Run the development server:**
+
+    ```bash
+    npm run dev
+    ```
+
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 🔑 Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
 
 ```env
 # Database
@@ -84,38 +88,38 @@ SMTP_USER=
 SMTP_PASS=
 ```
 
-## Available Scripts
+## 📦 Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build production application
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run seed` - Seed the database
-- `npm run mailtrap` - Test email configuration
+-   `npm run dev` — Start development server
+-   `npm run build` — Build production application
+-   `npm run start` — Start production server
+-   `npm run lint` — Run ESLint
+-   `npm run seed` — Seed the database
+-   `npm run mailtrap` — Test email configuration
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 ├── app/                  # Next.js app directory
-│   ├── api/             # API routes
-│   ├── components/      # Reusable components
-│   ├── login/          # Login page
-│   ├── register/       # Registration page
-│   └── upload/         # Video upload page
-├── lib/                # Utility functions
-├── models/             # MongoDB models
-├── public/            # Static assets
-└── types.d.ts         # TypeScript declarations
+│   ├── api/              # API routes
+│   ├── components/       # Reusable components
+│   ├── login/            # Login page
+│   ├── register/         # Registration page
+│   └── upload/           # Video upload page
+├── lib/                  # Utility functions
+├── models/               # MongoDB models
+├── public/               # Static assets
+└── types.d.ts            # TypeScript declarations
 ```
 
-## Contributing
+## 🤚 Contributing
 
-NO CONTRIBUTING PLEASE!
+**Contributions are not accepted for this project.**
 
-## License
+## 📝 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-## Support
+## 💬 Support
 
-For support, watch youtube video
+For support, please refer to the official documentation or watch the related YouTube video.
