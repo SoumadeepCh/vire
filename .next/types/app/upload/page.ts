@@ -1,4 +1,4 @@
-// File: C:\Users\SOUMADEEP\Documents\WEB\projects\vire\app\upload\page.tsx
+// File: C:\Users\SOUMADEEP\Documents\GitHub\vire\app\upload\page.tsx
 import * as entry from '../../../../app/upload/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

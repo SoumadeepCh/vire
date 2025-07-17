@@ -1,6 +1,24 @@
-# Vire: ImageKit Video Shop
+# Vire
 
-Vire is a modern, full-featured Next.js application for managing and selling video content, seamlessly integrated with ImageKit. It offers robust user authentication, secure video uploads, and smooth payment processing via Razorpay—all wrapped in a beautiful, responsive UI.
+**Vire** is your all-in-one platform for discovering, uploading, and selling video content online. Built for creators, educators, and businesses, Vire makes it easy to share your videos securely, manage your content, and accept payments—all in a beautiful, modern interface.
+
+---
+
+## 🌐 Live Demo
+
+The live website will be available soon! Stay tuned for the link.
+
+---
+
+## What can you do with Vire?
+
+-   **Browse and watch videos** from a curated library
+-   **Upload your own videos** with secure, fast storage via ImageKit
+-   **Sell your content** and accept payments with Razorpay
+-   **Register and log in** securely with NextAuth.js
+-   **Get notified** about purchases and uploads via email
+
+Vire is designed for anyone who wants to monetize video content or build a video-based community with ease.
 
 ## ✨ Features
 

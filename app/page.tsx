@@ -5,8 +5,11 @@ import VideoFeed from "./components/VideoFeed";
 import { IVideo } from "@/models/Video";
 import { apiClient } from "@/lib/api-client";
 
+import VideoFeedSkeleton from "./components/VideoFeedSkeleton";
+
 export default function Home() {
   const [videos, setVideos] = useState<IVideo[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -15,6 +18,8 @@ export default function Home() {
         setVideos(data);
       } catch (error) {
         console.error("Error fetching videos:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -23,8 +28,8 @@ export default function Home() {
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">ImageKit ReelsPro</h1>
-      <VideoFeed videos={videos} />
+      <h1 className="text-3xl font-bold mb-8">vire</h1>
+      {loading ? <VideoFeedSkeleton /> : <VideoFeed videos={videos} />}
     </main>
   );
 }

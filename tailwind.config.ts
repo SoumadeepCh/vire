@@ -17,8 +17,21 @@ export default {
   },
   plugins: [daisyui],
   daisyui: {
-    themes: ["dark"],
-    darkTheme: "dark",
+    themes: [
+      {
+        mytheme: {
+          "primary": "#00ff00",
+          "secondary": "#00ff00",
+          "accent": "#00ff00",
+          "neutral": "#2a323c",
+          "base-100": "#1d232a",
+          "info": "#3abff8",
+          "success": "#36d399",
+          "warning": "#fbbd23",
+          "error": "#f87272",
+        },
+      },
+    ],
   },
   darkMode: "class",
 } satisfies Config;

@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode } from "react";
+import { AlertCircle, CheckCircle2, Info, XCircle } from "lucide-react";
 
 type NotificationType = "success" | "error" | "warning" | "info";
 
@@ -24,7 +25,11 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     setNotification({ message, type, id });
     setTimeout(() => {
       setNotification((current) => (current?.id === id ? null : current));
-    }, 3000);
+    }, 5000);
+  };
+
+  const handleClose = () => {
+    setNotification(null);
   };
 
   return (
@@ -32,8 +37,16 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       {children}
       {notification && (
         <div className="toast toast-bottom toast-end z-[100]">
-          <div className={`alert ${getAlertClass(notification.type)}`}>
-            <span>{notification.message}</span>
+          <div
+            className={`alert ${getAlertClass(
+              notification.type
+            )} shadow-lg rounded-box flex items-center`}
+          >
+            <div className="flex-shrink-0">{getIcon(notification.type)}</div>
+            <span className="flex-grow">{notification.message}</span>
+            <button onClick={handleClose} className="btn btn-ghost btn-sm btn-circle">
+              <XCircle className="w-5 h-5" />
+            </button>
           </div>
         </div>
       )}
@@ -53,6 +66,21 @@ function getAlertClass(type: NotificationType): string {
       return "alert-info";
     default:
       return "alert-info";
+  }
+}
+
+function getIcon(type: NotificationType): ReactNode {
+  switch (type) {
+    case "success":
+      return <CheckCircle2 className="w-6 h-6" />;
+    case "error":
+      return <XCircle className="w-6 h-6" />;
+    case "warning":
+      return <AlertCircle className="w-6 h-6" />;
+    case "info":
+      return <Info className="w-6 h-6" />;
+    default:
+      return <Info className="w-6 h-6" />;
   }
 }
 

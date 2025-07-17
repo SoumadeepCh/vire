@@ -1,4 +1,4 @@
-// File: C:\Users\SOUMADEEP\Documents\WEB\projects\vire\app\api\imagekit-auth\route.ts
+// File: C:\Users\SOUMADEEP\Documents\GitHub\vire\app\api\imagekit-auth\route.ts
 import * as entry from '../../../../../app/api/imagekit-auth/route.js'
 import type { NextRequest } from 'next/server.js'
 
