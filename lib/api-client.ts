@@ -1,4 +1,5 @@
 import { IVideo } from "@/models/Video";
+import { IComment } from "@/models/Comment";
 
 export type VideoFormData = Omit<IVideo, "_id">;
 
@@ -45,6 +46,45 @@ class ApiClient {
     return this.fetch<IVideo>("/videos", {
       method: "POST",
       body: videoData,
+    });
+  }
+
+  async getComments(videoId: string) {
+    return this.fetch<IComment[]>(`/comments?videoId=${videoId}`);
+  }
+
+  async createComment(commentData: { videoId: string; content: string; parentId?: string }) {
+    return this.fetch<IComment>("/comments", {
+      method: "POST",
+      body: commentData,
+    });
+  }
+
+  async likeVideo(videoId: string) {
+    return this.fetch("/videos/like", {
+      method: "POST",
+      body: { videoId, action: "like" },
+    });
+  }
+
+  async dislikeVideo(videoId: string) {
+    return this.fetch("/videos/like", {
+      method: "POST",
+      body: { videoId, action: "dislike" },
+    });
+  }
+
+  async likeComment(commentId: string) {
+    return this.fetch("/comments/like", {
+      method: "POST",
+      body: { commentId, action: "like" },
+    });
+  }
+
+  async dislikeComment(commentId: string) {
+    return this.fetch("/comments/like", {
+      method: "POST",
+      body: { commentId, action: "dislike" },
     });
   }
 }

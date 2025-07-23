@@ -7,12 +7,20 @@ export interface IUser {
   _id?: mongoose.Types.ObjectId;
   createdAt?: Date;
   updatedAt?: Date;
+  likedVideos: mongoose.Types.ObjectId[];
+  dislikedVideos: mongoose.Types.ObjectId[];
+  likedComments: mongoose.Types.ObjectId[];
+  dislikedComments: mongoose.Types.ObjectId[];
 }
 
 const userSchema = new Schema<IUser>(
   {
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    likedVideos: [{ type: Schema.Types.ObjectId, ref: "Video" }],
+    dislikedVideos: [{ type: Schema.Types.ObjectId, ref: "Video" }],
+    likedComments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
+    dislikedComments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   },
   { timestamps: true }
 );

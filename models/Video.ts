@@ -17,6 +17,9 @@ export interface IVideo {
     width: number;
     quality?: number;
   };
+  likes: mongoose.Types.ObjectId[];
+  dislikes: mongoose.Types.ObjectId[];
+  comments: mongoose.Types.ObjectId[];
 }
 
 const videoSchema = new Schema<IVideo>(
@@ -31,6 +34,9 @@ const videoSchema = new Schema<IVideo>(
       width: { type: Number, default: VIDEO_DIMENSIONS.width },
       quality: { type: Number, min: 1, max: 100 },
     },
+    likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    dislikes: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   },
   { timestamps: true }
 );
