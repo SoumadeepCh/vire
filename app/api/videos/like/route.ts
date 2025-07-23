@@ -34,8 +34,6 @@ export async function POST(req: NextRequest) {
 
     const videoLiked = video.likes.includes(userId);
     const videoDisliked = video.dislikes.includes(userId);
-    const userLikedVideo = user.likedVideos.includes(videoId);
-    const userDislikedVideo = user.dislikedVideos.includes(videoId);
 
     if (action === "like") {
       if (videoLiked) {
