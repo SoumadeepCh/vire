@@ -34,8 +34,8 @@ export async function POST(req: NextRequest) {
 
     const commentLiked = comment.likes.includes(userId);
     const commentDisliked = comment.dislikes.includes(userId);
-    const userLikedComment = user.likedComments.includes(commentId);
-    const userDislikedComment = user.dislikedComments.includes(commentId);
+    // const userLikedComment = user.likedComments.includes(commentId);
+    // const userDislikedComment = user.dislikedComments.includes(commentId);
 
     if (action === "like") {
       if (commentLiked) {

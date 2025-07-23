@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
-import { IKImage } from "imagekitio-react";
+// import { IKImage } from "imagekitio-react";
 import { IVideo } from "@/models/Video";
 import { apiClient } from "@/lib/api-client";
 import { ArrowLeft } from "lucide-react";
@@ -86,7 +86,7 @@ const VideoPage = () => {
 							Video Not Found
 						</h2>
 						<p className="text-gray-400 mb-6">
-							The video you're looking for doesn't exist.
+							The video you&apos;re looking for doesn&apos;t exist.
 						</p>
 						<button
 							onClick={goBack}
