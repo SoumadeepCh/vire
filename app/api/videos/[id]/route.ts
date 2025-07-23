@@ -4,12 +4,11 @@ import Video from "@/models/Video";
 
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
-  const { id } = context.params;
   try {
     await connectToDatabase();
-    const video = await Video.findById(id).lean();
+    const video = await Video.findById(params.id).lean();
 
     if (!video) {
       return NextResponse.json({ error: "Video not found" }, { status: 404 });
