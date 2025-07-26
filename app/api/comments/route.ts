@@ -17,7 +17,22 @@ export async function GET(req: NextRequest) {
       .populate("user", "email")
       .populate({
         path: "replies",
-        populate: { path: "user", select: "email" },
+        populate: {
+          path: "user",
+          select: "email",
+          model: "User",
+        },
+      })
+      .populate({
+        path: "replies",
+        populate: {
+          path: "replies",
+          populate: {
+            path: "user",
+            select: "email",
+            model: "User",
+          },
+        },
       })
       .lean();
 
@@ -50,7 +65,7 @@ export async function POST(req: NextRequest) {
     await connectToDatabase();
 
     const newComment = new Comment({
-      user: session.user._id,
+      user: session.user.id,
       video: videoId,
       content,
       parent: parentId,

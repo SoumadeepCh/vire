@@ -47,7 +47,7 @@ const CommentDisplay: React.FC<CommentDisplayProps> = ({
       <p className="text-white text-base">{comment.content}</p>
       <div className="flex items-center space-x-4 mt-2">
         <button
-          onClick={() => handleLikeComment(comment._id.toString())}
+          onClick={() => handleLikeComment(comment._id?.toString() || '')}
           className={`flex items-center space-x-1 ${isLiked ? 'text-emerald-400' : 'text-gray-400'} hover:text-emerald-400 transition-colors duration-200`}
         >
           <ThumbsUp className="w-4 h-4" />
@@ -116,7 +116,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ videoId }) => {
   const [replyTo, setReplyTo] = useState<string | null>(null);
   const [replyContent, setReplyContent] = useState('');
 
-  const sessionUserId = session?.user?._id?.toString();
+  const sessionUserId = session?.user?.id?.toString();
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -149,13 +149,19 @@ const CommentSection: React.FC<CommentSectionProps> = ({ videoId }) => {
       parentId,
     });
 
-    setComments(
-      comments.map((comment) =>
-        comment._id.toString() === parentId
-          ? { ...comment, replies: [...comment.replies, createdComment] }
-          : comment
-      )
-    );
+    const addReplyToComment = (comments: IComment[], parentId: string, reply: IComment): IComment[] => {
+      return comments.map(comment => {
+        if (comment._id.toString() === parentId) {
+          return { ...comment, replies: [...comment.replies, reply] };
+        }
+        if (comment.replies.length > 0) {
+          return { ...comment, replies: addReplyToComment(comment.replies as IComment[], parentId, reply) };
+        }
+        return comment;
+      });
+    };
+
+    setComments(prevComments => addReplyToComment(prevComments, parentId, createdComment));
     setReplyTo(null);
     setReplyContent('');
   };
@@ -173,17 +179,17 @@ const CommentSection: React.FC<CommentSectionProps> = ({ videoId }) => {
 
         if (action === 'like') {
           if (newLikes.includes(userId)) {
-            newLikes = newLikes.filter((id) => id !== userId);
+            newLikes = newLikes.filter((id) => id.toString() !== userId.toString());
           } else {
             newLikes.push(userId);
-            newDislikes = newDislikes.filter((id) => id !== userId);
+            newDislikes = newDislikes.filter((id) => id.toString() !== userId.toString());
           }
         } else if (action === 'dislike') {
           if (newDislikes.includes(userId)) {
-            newDislikes = newDislikes.filter((id) => id !== userId);
+            newDislikes = newDislikes.filter((id) => id.toString() !== userId.toString());
           } else {
             newDislikes.push(userId);
-            newLikes = newLikes.filter((id) => id !== userId);
+            newLikes = newLikes.filter((id) => id.toString() !== userId.toString());
           }
         }
         return { ...comment, likes: newLikes, dislikes: newDislikes };

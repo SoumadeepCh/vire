@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
   try {
     await connectToDatabase();
 
-    const userId = session.user._id;
+    const userId = session.user.id;
 
     const comment = await Comment.findById(commentId);
     const user = await User.findById(userId);
@@ -34,41 +34,36 @@ export async function POST(req: NextRequest) {
 
     const commentLiked = comment.likes.includes(userId);
     const commentDisliked = comment.dislikes.includes(userId);
-    // const userLikedComment = user.likedComments.includes(commentId);
-    // const userDislikedComment = user.dislikedComments.includes(commentId);
 
     if (action === "like") {
       if (commentLiked) {
         // User is unliking
-        comment.likes.pull(userId);
-        user.likedComments.pull(commentId);
+        await Comment.updateOne({ _id: commentId }, { $pull: { likes: userId } });
+        await User.updateOne({ _id: userId }, { $pull: { likedComments: commentId } });
       } else {
         // User is liking
-        comment.likes.addToSet(userId);
-        user.likedComments.addToSet(commentId);
+        await Comment.updateOne({ _id: commentId }, { $addToSet: { likes: userId } });
+        await User.updateOne({ _id: userId }, { $addToSet: { likedComments: commentId } });
         if (commentDisliked) {
-          comment.dislikes.pull(userId);
-          user.dislikedComments.pull(commentId);
+          await Comment.updateOne({ _id: commentId }, { $pull: { dislikes: userId } });
+          await User.updateOne({ _id: userId }, { $pull: { dislikedComments: commentId } });
         }
       }
     } else if (action === "dislike") {
       if (commentDisliked) {
         // User is undisliking
-        comment.dislikes.pull(userId);
-        user.dislikedComments.pull(commentId);
+        await Comment.updateOne({ _id: commentId }, { $pull: { dislikes: userId } });
+        await User.updateOne({ _id: userId }, { $pull: { dislikedComments: commentId } });
       } else {
         // User is disliking
-        comment.dislikes.addToSet(userId);
-        user.dislikedComments.addToSet(commentId);
+        await Comment.updateOne({ _id: commentId }, { $addToSet: { dislikes: userId } });
+        await User.updateOne({ _id: userId }, { $addToSet: { dislikedComments: commentId } });
         if (commentLiked) {
-          comment.likes.pull(userId);
-          user.likedComments.pull(commentId);
+          await Comment.updateOne({ _id: commentId }, { $pull: { likes: userId } });
+          await User.updateOne({ _id: userId }, { $pull: { likedComments: commentId } });
         }
       }
     }
-
-    await comment.save();
-    await user.save();
 
     return NextResponse.json({ success: true });
   } catch (error) {

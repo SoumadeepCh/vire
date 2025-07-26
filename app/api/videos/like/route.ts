@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
   try {
     await connectToDatabase();
 
-    const userId = session.user._id;
+    const userId = session.user.id;
 
     const video = await Video.findById(videoId);
     const user = await User.findById(userId);
@@ -38,35 +38,32 @@ export async function POST(req: NextRequest) {
     if (action === "like") {
       if (videoLiked) {
         // User is unliking
-        video.likes.pull(userId);
-        user.likedVideos.pull(videoId);
+        await Video.updateOne({ _id: videoId }, { $pull: { likes: userId } });
+        await User.updateOne({ _id: userId }, { $pull: { likedVideos: videoId } });
       } else {
         // User is liking
-        video.likes.addToSet(userId);
-        user.likedVideos.addToSet(videoId);
+        await Video.updateOne({ _id: videoId }, { $addToSet: { likes: userId } });
+        await User.updateOne({ _id: userId }, { $addToSet: { likedVideos: videoId } });
         if (videoDisliked) {
-          video.dislikes.pull(userId);
-          user.dislikedVideos.pull(videoId);
+          await Video.updateOne({ _id: videoId }, { $pull: { dislikes: userId } });
+          await User.updateOne({ _id: userId }, { $pull: { dislikedVideos: videoId } });
         }
       }
     } else if (action === "dislike") {
       if (videoDisliked) {
         // User is undisliking
-        video.dislikes.pull(userId);
-        user.dislikedVideos.pull(videoId);
+        await Video.updateOne({ _id: videoId }, { $pull: { dislikes: userId } });
+        await User.updateOne({ _id: userId }, { $pull: { dislikedVideos: videoId } });
       } else {
         // User is disliking
-        video.dislikes.addToSet(userId);
-        user.dislikedVideos.addToSet(videoId);
+        await Video.updateOne({ _id: videoId }, { $addToSet: { dislikes: userId } });
+        await User.updateOne({ _id: userId }, { $addToSet: { dislikedVideos: videoId } });
         if (videoLiked) {
-          video.likes.pull(userId);
-          user.likedVideos.pull(videoId);
+          await Video.updateOne({ _id: videoId }, { $pull: { likes: userId } });
+          await User.updateOne({ _id: userId }, { $pull: { likedVideos: videoId } });
         }
       }
     }
-
-    await video.save();
-    await user.save();
 
     return NextResponse.json({ success: true });
   } catch (error) {
