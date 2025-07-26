@@ -70,6 +70,43 @@ export default function VideoComponent({ video }: { video: IVideo }) {
         <p className="text-sm text-base-content/70 mt-1 truncate">
           {video.description}
         </p>
+
+        <div className="flex items-center mt-4">
+          <button className="flex items-center space-x-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21H9.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 0112.236 10H14z"
+              />
+            </svg>
+            <span>{video.likes?.length || 0}</span>
+          </button>
+          <button className="flex items-center space-x-2 ml-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.737 3h4.527a2 2 0 011.789 2.894l-3.5 7A2 2 0 0110.764 14H10z"
+              />
+            </svg>
+            <span>{video.dislikes?.length || 0}</span>
+          </button>
+        </div>
       </div>
     </div>
   );
