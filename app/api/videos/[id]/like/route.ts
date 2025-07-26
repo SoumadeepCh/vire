@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import Video from "@/models/Video";
 import { connectToDatabase } from "@/lib/db";
+import Video from "@/models/Video";
 import mongoose from "mongoose";
 
 export async function POST(
