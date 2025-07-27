@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 
 export async function POST(
 	req: NextRequest,
-	context: { params: { id: string } }
+	{params}: { params: { id: string } }
 ) {
 	const session = await getServerSession(authOptions);
 
@@ -17,7 +17,7 @@ export async function POST(
 
 	await connectToDatabase();
 
-	const { id } = context.params;
+	const { id } = params;
 	const { action }: { action: "like" | "dislike" } = await req.json();
 
 	try {
