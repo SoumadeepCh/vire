@@ -5,13 +5,21 @@ import { connectToDatabase } from "@/lib/db";
 import Video from "@/models/Video";
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  request: NextRequest
 ) {
+  const url = new URL(request.url);
+  const id = url.pathname.split('/').pop();
+
+  if (!id) {
+    return NextResponse.json({ error: "Video ID is missing" }, { status: 400 });
+  }
   try {
     await connectToDatabase();
     const session = await getServerSession(authOptions);
-    const video = await Video.findById(params.id).lean();
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const video = await Video.findById(id).lean();
 
     if (!video) {
       return NextResponse.json({ error: "Video not found" }, { status: 200 });
