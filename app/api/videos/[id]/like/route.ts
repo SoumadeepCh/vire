@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 
 export async function POST(
 	req: NextRequest,
-	{params}: { params: { id: string } }
+	{ params }: { params: { id: string } }
 ) {
 	const session = await getServerSession(authOptions);
 
@@ -35,23 +35,23 @@ export async function POST(
 		if (action === "like") {
 			if (video.likes.includes(userId)) {
 				video.likes = video.likes.filter(
-					(like) => !like.equals(userId)
+					(like: mongoose.Types.ObjectId) => !like.equals(userId)
 				);
 			} else {
 				video.likes.push(userId);
 				video.dislikes = video.dislikes.filter(
-					(dislike) => !dislike.equals(userId)
+					(dislike: mongoose.Types.ObjectId) => !dislike.equals(userId)
 				);
 			}
 		} else if (action === "dislike") {
 			if (video.dislikes.includes(userId)) {
 				video.dislikes = video.dislikes.filter(
-					(dislike) => !dislike.equals(userId)
+					(dislike: mongoose.Types.ObjectId) => !dislike.equals(userId)
 				);
 			} else {
 				video.dislikes.push(userId);
 				video.likes = video.likes.filter(
-					(like) => !like.equals(userId)
+					(like: mongoose.Types.ObjectId) => !like.equals(userId)
 				);
 			}
 		}
