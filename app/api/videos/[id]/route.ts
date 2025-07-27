@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 import { connectToDatabase } from "@/lib/db";
 import Video from "@/models/Video";
 
@@ -8,10 +10,11 @@ export async function GET(
 ) {
   try {
     await connectToDatabase();
+    const session = await getServerSession(authOptions);
     const video = await Video.findById(params.id).lean();
 
     if (!video) {
-      return NextResponse.json({ error: "Video not found" }, { status: 404 });
+      return NextResponse.json({ error: "Video not found" }, { status: 200 });
     }
 
     return NextResponse.json(video);
