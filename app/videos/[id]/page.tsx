@@ -7,8 +7,7 @@ import { useSession } from "next-auth/react";
 import VideoComponent from "@/app/components/VideoComponent";
 
 interface VideoPageProps {
-	params: { id: string };
-	searchParams?: { [key: string]: string | string[] | undefined };
+	params: any; // Adjust this type based on your routing setup
 }
 
 export default function VideoPage({ params }: VideoPageProps) {
