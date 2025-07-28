@@ -1,10 +1,16 @@
+// types/next-auth.d.ts
 import { DefaultSession } from "next-auth";
-import mongoose from "mongoose";
 
 declare module "next-auth" {
-  interface Session {
-    user: {
-      _id: mongoose.Types.ObjectId;
-    } & DefaultSession["user"];
-  }
+	interface Session {
+		user: {
+			id: string; // <- add this
+		} & DefaultSession["user"];
+	}
+}
+
+declare module "next-auth/jwt" {
+	interface JWT {
+		id: string;
+	}
 }
