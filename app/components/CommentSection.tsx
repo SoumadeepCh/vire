@@ -2,11 +2,16 @@ import { useState, useEffect } from 'react';
 import { IComment } from '@/models/Comment';
 import { apiClient } from '@/lib/api-client';
 import { useSession } from 'next-auth/react';
+import { Session } from 'next-auth';
 import { ThumbsUp, ThumbsDown, MessageSquare } from 'lucide-react';
 import { IUser } from '@/models/User';
+import mongoose, { Types } from "mongoose";
+import { isIComment } from '@/lib/utils';
+
 
 interface CommentSectionProps {
   videoId: string;
+  session?: Session | null;
 }
 
 interface CommentDisplayProps {
@@ -23,6 +28,8 @@ interface CommentDisplayProps {
   setReplyContent: (content: string) => void;
 }
 
+
+
 const CommentDisplay: React.FC<CommentDisplayProps> = ({
   comment,
   level,
@@ -36,8 +43,13 @@ const CommentDisplay: React.FC<CommentDisplayProps> = ({
   replyContent,
   setReplyContent,
 }) => {
-  const isLiked = sessionUserId && comment.likes.includes(sessionUserId);
-  const isDisliked = sessionUserId && comment.dislikes.includes(sessionUserId);
+  const isLiked =
+		sessionUserId &&
+		comment.likes.some((id) => id.toString() === sessionUserId);
+  const isDisliked =
+		sessionUserId &&
+		comment.dislikes.some((id) => id.toString() === sessionUserId);
+
 
   return (
     <div className={`mt-4 ${level > 0 ? 'ml-8' : ''}`}>
@@ -54,23 +66,23 @@ const CommentDisplay: React.FC<CommentDisplayProps> = ({
           <span>{comment.likes.length}</span>
         </button>
         <button
-          onClick={() => handleDislikeComment(comment._id.toString())}
+          onClick={() => handleDislikeComment(comment._id?.toString() || '')}
           className={`flex items-center space-x-1 ${isDisliked ? 'text-red-400' : 'text-gray-400'} hover:text-red-400 transition-colors duration-200`}
         >
           <ThumbsDown className="w-4 h-4" />
           <span>{comment.dislikes.length}</span>
         </button>
         <button
-          onClick={() => setReplyTo(comment._id.toString())}
+          onClick={() => setReplyTo(comment._id?.toString() || '')}
           className="flex items-center space-x-1 text-gray-400 hover:text-blue-400 transition-colors duration-200"
         >
           <MessageSquare className="w-4 h-4" />
           <span>Reply</span>
         </button>
       </div>
-      {replyTo === comment._id.toString() && (
+      {replyTo === comment._id?.toString() && (
         <form
-          onSubmit={(e) => handleReplySubmit(e, comment._id.toString())}
+          onSubmit={(e) => handleReplySubmit(e, comment._id?.toString() || '')}
           className="mt-2"
         >
           <textarea
@@ -88,22 +100,24 @@ const CommentDisplay: React.FC<CommentDisplayProps> = ({
         </form>
       )}
       <div className="ml-4 mt-2">
-        {comment.replies.map((reply) => (
-          <CommentDisplay
-            key={(reply as IComment)._id.toString()}
-            comment={reply as IComment}
-            level={level + 1}
-            videoId={videoId}
-            sessionUserId={sessionUserId}
-            handleLikeComment={handleLikeComment}
-            handleDislikeComment={handleDislikeComment}
-            handleReplySubmit={handleReplySubmit}
-            replyTo={replyTo}
-            setReplyTo={setReplyTo}
-            replyContent={replyContent}
-            setReplyContent={setReplyContent}
-          />
-        ))}
+        {comment.replies
+          .filter(isIComment)
+          .map((reply) => (
+            <CommentDisplay
+              key={reply._id.toString()}
+              comment={reply}
+              level={level + 1}
+              videoId={videoId}
+              sessionUserId={sessionUserId}
+              handleLikeComment={handleLikeComment}
+              handleDislikeComment={handleDislikeComment}
+              handleReplySubmit={handleReplySubmit}
+              replyTo={replyTo}
+              setReplyTo={setReplyTo}
+              replyContent={replyContent}
+              setReplyContent={setReplyContent}
+            />
+          ))}
       </div>
     </div>
   );
@@ -135,7 +149,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ videoId }) => {
       content: newComment,
     });
 
-    setComments([createdComment, ...comments]);
+    setComments([createdComment, ...comments] as IComment[]);
     setNewComment('');
   };
 
@@ -149,63 +163,71 @@ const CommentSection: React.FC<CommentSectionProps> = ({ videoId }) => {
       parentId,
     });
 
-    const addReplyToComment = (comments: IComment[], parentId: string, reply: IComment): IComment[] => {
+    const addReplyToComment = (comments: (IComment | Types.ObjectId)[], parentId: string, reply: IComment): IComment[] => {
       return comments.map(comment => {
-        if (comment._id.toString() === parentId) {
-          return { ...comment, replies: [...comment.replies, reply] };
+        if (isIComment(comment) && comment._id.toString() === parentId) {
+          const updatedReplies: (Types.ObjectId | IComment)[] = [...comment.replies, reply];
+          return { ...comment, replies: updatedReplies.filter(isIComment) } as IComment;
         }
-        if (comment.replies.length > 0) {
-          return { ...comment, replies: addReplyToComment(comment.replies as IComment[], parentId, reply) };
+        if (isIComment(comment) && comment.replies.length > 0) {
+          const updatedNestedReplies = addReplyToComment(comment.replies.filter(isIComment), parentId, reply);
+          return { ...comment, replies: updatedNestedReplies } as IComment;
         }
         return comment;
-      });
+      }).filter(isIComment);
     };
 
-    setComments(prevComments => addReplyToComment(prevComments, parentId, createdComment));
+    setComments(prevComments => addReplyToComment(prevComments, parentId, createdComment) as IComment[]);
     setReplyTo(null);
     setReplyContent('');
   };
 
   const updateCommentLikesDislikes = (
-    commentsArray: IComment[],
+    commentsArray: (IComment | Types.ObjectId)[],
     targetCommentId: string,
     userId: string,
     action: 'like' | 'dislike'
   ): IComment[] => {
     return commentsArray.map((comment) => {
-      if (comment._id.toString() === targetCommentId) {
+      if (isIComment(comment) && comment._id.toString() === targetCommentId) {
         let newLikes = [...comment.likes];
         let newDislikes = [...comment.dislikes];
 
+        const userIdObjectId = new Types.ObjectId(userId);
+
         if (action === 'like') {
-          if (newLikes.includes(userId)) {
-            newLikes = newLikes.filter((id) => id.toString() !== userId.toString());
+          if (newLikes.some((id) => id.equals(userIdObjectId))) {
+            newLikes = newLikes.filter(
+              (id) => !id.equals(userIdObjectId)
+            );
           } else {
-            newLikes.push(userId);
-            newDislikes = newDislikes.filter((id) => id.toString() !== userId.toString());
+            newLikes.push(userIdObjectId);
+            newDislikes = newDislikes.filter(
+              (id) => !id.equals(userIdObjectId)
+            );
           }
         } else if (action === 'dislike') {
-          if (newDislikes.includes(userId)) {
-            newDislikes = newDislikes.filter((id) => id.toString() !== userId.toString());
+          if (newDislikes.some((id) => id.equals(userIdObjectId))) {
+            newDislikes = newDislikes.filter((id) => !id.equals(userIdObjectId));
           } else {
-            newDislikes.push(userId);
-            newLikes = newLikes.filter((id) => id.toString() !== userId.toString());
+            newDislikes.push(userIdObjectId);
+            newLikes = newLikes.filter((id) => !id.equals(userIdObjectId));
           }
         }
-        return { ...comment, likes: newLikes, dislikes: newDislikes };
-      } else if (comment.replies && comment.replies.length > 0) {
+        return { ...comment, likes: newLikes, dislikes: newDislikes } as IComment;
+      } else if (isIComment(comment) && comment.replies && comment.replies.length > 0) {
         return {
           ...comment,
           replies: updateCommentLikesDislikes(
-            comment.replies as IComment[],
+            comment.replies.filter(isIComment),
             targetCommentId,
             userId,
             action
           ),
-        };
+        } as IComment;
       }
       return comment;
-    });
+    }).filter(isIComment);
   };
 
   const handleLikeComment = async (commentId: string) => {
@@ -227,7 +249,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ videoId }) => {
     try {
       await apiClient.dislikeComment(commentId);
       setComments((prevComments) =>
-        updateCommentLikesDislikes(prevComments, commentId, sessionUserId, 'dislike')
+        updateCommentLikesDislikes(prevComments, commentId, sessionUserId, 'dislike') as IComment[]
       );
     } catch (error) {
       console.error("Error disliking comment:", error);
@@ -257,7 +279,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ videoId }) => {
       <div>
         {comments.map((comment) => (
           <CommentDisplay
-            key={comment._id.toString()}
+            key={(comment._id as Types.ObjectId)?.toString() || ''}
             comment={comment}
             level={0}
             videoId={videoId}

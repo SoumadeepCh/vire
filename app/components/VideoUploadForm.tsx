@@ -7,13 +7,9 @@ import { Loader2 } from "lucide-react";
 import { useNotification } from "./Notification";
 import { apiClient } from "@/lib/api-client";
 import FileUpload from "./FileUpload";
+import { VideoFormData } from "@/lib/api-client";
 
-interface VideoFormData {
-  title: string;
-  description: string;
-  videoUrl: string;
-  thumbnailUrl: string;
-}
+
 
 export default function VideoUploadForm() {
   const [loading, setLoading] = useState(false);
