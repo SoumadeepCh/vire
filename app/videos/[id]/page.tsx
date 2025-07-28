@@ -6,7 +6,12 @@ import CommentSection from "@/app/components/CommentSection";
 import { useSession } from "next-auth/react";
 import VideoComponent from "@/app/components/VideoComponent";
 
-export default function VideoPage({ params }: { params: { id: string } }) {
+interface VideoPageProps {
+  params: { id: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+
+export default function VideoPage({ params }: VideoPageProps) {
   const { id } = params;
   const [video, setVideo] = useState<IVideo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
